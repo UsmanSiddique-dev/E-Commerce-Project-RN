@@ -1,24 +1,26 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import {Feather, Ionicons } from "@expo/vector-icons";
-import {COLORS} from "./../../../constants";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { COLORS } from "./../../../constants/index";
 
 const TabLayout = () => {
   return (
-    <Tabs screenOptions={{
-        headerShown:false,
+    <Tabs
+      screenOptions={{
+        headerShown: false,
         tabBarActiveTintColor: COLORS.primary,
-         tabBarInactiveTintColor: "#CDCDE0",
-         tabBarShowLabel: false,
-         tabBarStyle:{
-            backgroundColor:'#fff',
-            borderTopWidth:1,
-            borderTopColor:'#F0F0F0',
-            height:58,
-            paddingTop:8
-         }
-    }}>
+        tabBarInactiveTintColor: "#CDCDE0",
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: "#fff",
+          borderTopWidth: 1,
+          borderTopColor: "#F0F0F0",
+          height: 58,
+          paddingTop: 8,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
