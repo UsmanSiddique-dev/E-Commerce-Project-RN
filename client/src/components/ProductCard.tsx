@@ -17,6 +17,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="w-full h-full"
             resizeMode="cover"
             resizeMethod="resize"
+            
           />
 
           {/* Favourite Icon */}
