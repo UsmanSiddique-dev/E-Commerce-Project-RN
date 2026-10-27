@@ -61,7 +61,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   ) => {};
   const clearCart = async () => {};
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  use(() => {
+  useEffect(() => {
     fetchcart();
   }, []);
   return (
