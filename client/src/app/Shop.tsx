@@ -98,6 +98,7 @@ const Shop = () => {
           contentContainerStyle={{
             padding: 16,
             paddingBottom: 100,
+            
           }}
           columnWrapperStyle={{ justifyContent: "space-between" }}
           renderItem={({ item }) => <ProductCard product={item} />}

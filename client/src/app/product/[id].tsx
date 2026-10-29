@@ -24,7 +24,7 @@ const ProductDetails = () => {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
   const { addToCart, cartItems, itemCount } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -32,7 +32,7 @@ const ProductDetails = () => {
   const fetchProduct = async () => {
     const found: any = dummyProducts.find((product) => product._id === id);
     setProduct(found ?? null);
-    setloading(true);
+    setloading(false);
   };
   useEffect(() => {
     fetchProduct();
