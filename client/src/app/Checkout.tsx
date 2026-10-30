@@ -1,9 +1,12 @@
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "expo-router";
 import { Address } from "../../constants/types";
 import { dummyAddress } from "@/assets/assets";
+import Toast from "react-native-toast-message";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { COLORS } from "../../constants";
 
 const Checkout = () => {
   const { cartTotal } = useCart();
@@ -25,9 +28,34 @@ const Checkout = () => {
     }
     setPageLoading(false);
   };
-  useEffect(()=>{
-    fetchAddress()
-  },[])
+  const handlePlaceHolder = async () => {
+    if (!selectedAddress) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please add a Shipping Address",
+      });
+      return;
+    }
+    if (paymentMethod === "stripe") {
+      return Toast.show({
+        type: "error",
+        text1: "Info",
+        text2: "Stripre not implemented yet",
+      });
+    }
+    router.replace("/orders");
+  };
+  useEffect(() => {
+    fetchAddress();
+  }, []);
+  if (pageLoading) {
+    return (
+      <SafeAreaView className="flex-1 bg-surface  justify-center items-center">
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </SafeAreaView>
+    );
+  }
   return (
     <View>
       <Text>Checkout</Text>
