@@ -19,7 +19,9 @@ const TabLayout = () => {
           borderTopWidth: 1,
           borderTopColor: "#F0F0F0",
           height: 58,
-          paddingTop: 8,
+          paddingTop: 6,
+          paddingBottom: 6,
+          marginBottom:20
         },
       }}
     >

@@ -57,7 +57,7 @@ const Cart = () => {
             {/* CheckOut Button */}
             <TouchableOpacity
               className="bg-primary py-4 rounded-full items-center"
-              onPress={() => router.push("/checkout")}
+              onPress={() => router.push("/Checkout")}
             >
               <Text className="text-white font-bold text-base">Checkout</Text>
             </TouchableOpacity>

@@ -113,7 +113,7 @@ const Home = () => {
                 isSelected={false}
                 onPress={() =>
                   router.push({
-                    pathname: "/shop",
+                    pathname: "/Shop",
                     params: {
                       category: cat.id === "all" ? "" : cat.name,
                     },
@@ -128,7 +128,7 @@ const Home = () => {
         <View className="mb-6">
           <View className="flex-row justify-between items-center mb-4">
             <Text className="text-xl font-bold text-primary">Popular</Text>
-            <TouchableOpacity onPress={() => router.push("/shop")}>
+            <TouchableOpacity onPress={() => router.push("/Shop")}>
               <Text className="text-sm text-secondary">See All</Text>
             </TouchableOpacity>
           </View>

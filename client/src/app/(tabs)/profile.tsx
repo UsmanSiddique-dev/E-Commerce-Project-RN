@@ -11,7 +11,7 @@ const Profile = () => {
   const { user } = { user: dummyUser };
   const router = useRouter();
   const handleLogout= async ()=>{
-    router.replace("/sign-in")
+    router.replace("/auth/sign-in")
   }
   return (
     <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
@@ -40,7 +40,7 @@ const Profile = () => {
             </Text>
             <TouchableOpacity
               className="bg-primary w-3/5 py-3 rounded-full items-center shadow-lg"
-              onPress={() => router.push("/sign-in")}
+              onPress={() => router.push("/")}
             >
               <Text className="text-white font-bold text-lg  ">
                 Login / SignUp
@@ -69,7 +69,7 @@ const Profile = () => {
                   onPress={() => router.push("/admin")}
                   className="mt-4 bg-primary px-6 py-2 rounded-full"
                 >
-                  <Text className="text-wrap font-bold">Admin Panel</Text>
+                  <Text className="text-wrap font-bold text-white">Admin Panel</Text>
                 </TouchableOpacity>
               )}
             </View>
