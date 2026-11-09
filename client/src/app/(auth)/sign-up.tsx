@@ -1,14 +1,27 @@
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, Link } from "expo-router";
-import { useSignUp } from "@clerk/clerk-expo";
-import { COLORS } from "@/constants";
+import { useSignUp } from "@clerk/expo";
+import { COLORS } from "../../../constants/index";
+
+function getErrorMessage(error: unknown, fallback: string) {
+    if (typeof error === "object" && error !== null) {
+        if ("longMessage" in error && typeof error.longMessage === "string") {
+            return error.longMessage;
+        }
+        if ("message" in error && typeof error.message === "string") {
+            return error.message;
+        }
+    }
+
+    return fallback;
+}
 
 export default function SignUpScreen() {
-    const { isLoaded, signUp, setActive } = useSignUp();
+    const { signUp, errors, fetchStatus } = useSignUp();
     const router = useRouter();
 
     const [emailAddress, setEmailAddress] = useState("");
@@ -17,78 +30,87 @@ export default function SignUpScreen() {
     const [lastName, setLastName] = useState("");
     const [code, setCode] = useState("");
     const [pendingVerification, setPendingVerification] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const loading = fetchStatus === "fetching";
+
+    const showAuthError = (error: unknown, fallback: string) => {
+        const fieldError = errors.fields.code
+            ?? errors.fields.emailAddress
+            ?? errors.fields.password
+            ?? errors.fields.firstName
+            ?? errors.fields.lastName;
+
+        Toast.show({
+            type: "error",
+            text1: "Sign Up Failed",
+            text2: getErrorMessage(error, fieldError?.longMessage ?? fieldError?.message ?? fallback),
+        });
+    };
 
     const onSignUpPress = async () => {
-        if (!isLoaded) return;
-
-        if (!emailAddress || !password) {
+        if (!emailAddress.trim() || !password) {
             Toast.show({
-                type: 'error',
-                text1: 'Missing Fields',
-                text2: 'Please fill in all fields'
+                type: "error",
+                text1: "Missing Fields",
+                text2: "Please enter your email and password",
             });
             return;
         }
 
-        setLoading(true);
         try {
-            await signUp.create({
-                emailAddress,
+            const { error } = await signUp.password({
+                emailAddress: emailAddress.trim(),
                 password,
-                firstName,
-                lastName,
+                firstName: firstName.trim() || undefined,
+                lastName: lastName.trim() || undefined,
             });
 
-            await signUp.prepareEmailAddressVerification({
-                strategy: "email_code",
-            });
+            if (error) {
+                showAuthError(error, "Unable to create your account");
+                return;
+            }
+
+            const { error: verificationError } = await signUp.verifications.sendEmailCode();
+            if (verificationError) {
+                showAuthError(verificationError, "Unable to send the verification code");
+                return;
+            }
 
             setPendingVerification(true);
-        } catch (err: any) {
-            Toast.show({
-                type: 'error',
-                text1: 'Failed to Sign Up',
-                text2: err?.errors?.[0]?.message ?? "Something went wrong"
-            });
-        } finally {
-            setLoading(false);
+        } catch (error) {
+            showAuthError(error, "Unable to create your account");
         }
     };
 
     const onVerifyPress = async () => {
-        if (!isLoaded) return;
-
-        if (!code) {
+        if (!code.trim()) {
             Toast.show({
-                type: 'error',
-                text1: 'Missing Fields',
-                text2: 'Enter verification code'
+                type: "error",
+                text1: "Missing Fields",
+                text2: "Enter the verification code",
             });
             return;
         }
 
-        setLoading(true);
         try {
-            const attempt = await signUp.attemptEmailAddressVerification({ code });
-
-            if (attempt.status === "complete") {
-                await setActive({ session: attempt.createdSessionId });
-                router.replace("/");
-            } else {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Verification incomplete'
-                });
+            const { error } = await signUp.verifications.verifyEmailCode({ code: code.trim() });
+            if (error) {
+                showAuthError(error, "Invalid verification code");
+                return;
             }
-        } catch (err: any) {
-            Toast.show({
-                type: 'error',
-                text1: 'Failed to Verify',
-                text2: err?.errors?.[0]?.message ?? "Invalid code"
-            });
-        } finally {
-            setLoading(false);
+
+            if (signUp.status === "complete") {
+                await signUp.finalize({
+                    navigate: ({ session }) => {
+                        if (!session?.currentTask) {
+                            router.replace("/");
+                        }
+                    },
+                });
+            } else {
+                showAuthError(null, "Email verification is not complete yet");
+            }
+        } catch (error) {
+            showAuthError(error, "Invalid verification code");
         }
     };
 
