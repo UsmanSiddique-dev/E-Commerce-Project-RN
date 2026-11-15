@@ -2,9 +2,12 @@ import "dotenv/config"
 import express from "express"
 import type {Request,Response} from "express";
 import cors from "cors"
+import connectDB from "./config/db.ts";
 
 const app= express();
 
+// COnnest To MongoDB
+await connectDB()
 app.use(cors())
 app.use(express.json())
 
