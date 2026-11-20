@@ -42,7 +42,7 @@ const Profile = () => {
             </Text>
             <TouchableOpacity
               className="bg-primary w-3/5 py-3 rounded-full items-center shadow-lg"
-              onPress={() => router.push("/")}
+              onPress={() => router.push("/(auth)/sign-in")}
             >
               <Text className="text-white font-bold text-lg  ">
                 Login / SignUp
